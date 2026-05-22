@@ -1,0 +1,17 @@
+volumes/
+*_data/
+.data/
+.env
+.env.local
+.env.*.local
+node_modules/
+.npm
+dist/
+.next/
+out/
+*.log
+.caddy/
+/data/
+/config/
+.DS_Store
+Thumbs.db

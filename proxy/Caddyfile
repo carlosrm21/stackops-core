@@ -1,0 +1,27 @@
+tu-dominio.com {
+    reverse_proxy stackops-web-app:3000
+    encode zstd gzip
+    header {
+        X-Frame-Options "DENY"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        -Server
+    }
+}
+
+wp-pro.tu-dominio.com {
+    root * /var/www/html
+    php_fastcgi stackops-wp-app:9000
+    file_server
+    encode zstd gzip
+    header {
+        X-Frame-Options "DENY"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        -Server
+    }
+}

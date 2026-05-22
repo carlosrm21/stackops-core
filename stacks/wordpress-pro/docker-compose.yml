@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  wp-db:
+    image: mariadb:11-alpine
+    container_name: stackops-wp-db
+    restart: always
+    command: --max-connections=100 --innodb-buffer-pool-size=256M --innodb-log-buffer-size=8M
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_seguro
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: wp_password_seguro
+    expose:
+      - "3306"
+    volumes:
+      - wp_db_data:/var/lib/mysql
+    networks:
+      - stackops-network
+  wordpress:
+    image: wordpress:6-php8.3-fpm-alpine
+    container_name: stackops-wp-app
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: wp-db:3306
+      WORDPRESS_DB_NAME: wordpress_db
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: wp_password_seguro
+    expose:
+      - "9000"
+    volumes:
+      - wp_app_data:/var/www/html
+    networks:
+      - stackops-network
+    depends_on:
+      - wp-db
+      - wp-redis
+  wp-redis:
+    image: redis:7-alpine
+    container_name: stackops-wp-redis
+    restart: always
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    expose:
+      - "6379"
+    networks:
+      - stackops-network
+networks:
+  stackops-network:
+    external: true
+    name: stackops-network
+volumes:
+  wp_db_data:
+  wp_app_data:

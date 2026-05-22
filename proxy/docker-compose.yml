@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: stackops-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - stackops-network
+networks:
+  stackops-network:
+    external: true
+    name: stackops-network
+volumes:
+  caddy_data:
+  caddy_config:
