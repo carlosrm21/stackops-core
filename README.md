@@ -32,6 +32,33 @@ Sigue estos pasos en tu servidor limpio (Ubuntu recomendado):
 ### Paso 1: Blindar el Servidor
 Clona el repositorio, dale permisos de ejecución al script de seguridad y ejecútalo como root:
 
+### Paso 2: Levantar la Red y el Proxy Global
+Crea la red virtual de Docker y enciende el proxy inverso. Asegúrate de modificar el archivo proxy/Caddyfile con tu dominio real antes de iniciar.
+
+Bash
+docker network create stackops-network
+cd proxy && docker-compose up -d
+
+### Paso 3: Lanzar tu Entorno de Aplicación
+Levanta el contenedor de la aplicación web y la base de datos de caché:
+
+Bash
+cd ../stacks/node-app && docker-compose up -d
+
+## 💾 Configuración de Respaldos Diarios
+Para automatizar la copia de seguridad de tus datos a la medianoche todos los días, añade el script al programador de tareas del sistema (cron):
+
+Bash
+sudo crontab -e
+
+Añade la siguiente línea al final del archivo:
+
+Plaintext
+0 0 * * * /bin/bash /opt/stackops/stackops-core/scripts/backup-cron.sh >> /var/log/stackops-backups.log 2>&1
+
+## 📄 Licencia
+Este proyecto está bajo la Licencia MIT. Siéntete libre de usarlo, modificarlo y adaptarlo a tus necesidades comerciales o personales.
+
 ```bash
 git clone [https://github.com/carlosrm21/stackops-core.git](https://github.com/carlosrm21/stackops-core.git)
 cd stackops-core
